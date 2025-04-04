@@ -1,15 +1,11 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const CategorySchema = new mongoose.Schema({
-    name: String, // Main category (Technician, Electrician, etc.)
-    image: String, // Image URL for category
-    subcategories: [
-        {
-            name: String, // Subcategory name (AC Repair, Cooler Repair, etc.)
-            price: Number, // Price for this subcategory
-            description: String // Details about this service
-        }
-    ]
+const serviceSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  price: Number,
+  category: String,
+  image: String, // Store file path
 });
 
-module.exports = mongoose.model("Category", CategorySchema);
+module.exports = mongoose.model('Service', serviceSchema);

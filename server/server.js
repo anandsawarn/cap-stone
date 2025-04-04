@@ -1,10 +1,13 @@
-require("dotenv").config();  // new line
-// Validate .env variables
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require('express-rate-limit');
+const path = require('path');
+const multer = require('multer');
+const serviceRoutes = require('./routes/services');
 
 const app = express();
 
@@ -29,17 +32,20 @@ app.use(limiter);
 
 // Middleware
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images
 
 // Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB Connected ✅"))
-  .catch((err) => console.error("MongoDB Connection Error:", err));
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/serviceDB', { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+})
+.then(() => console.log("MongoDB Connected ✅"))
+.catch((err) => console.error("MongoDB Connection Error:", err));
 
 // Routes
-app.use("/api/auth", require("./routes/auth"));
+app.use('/api/services', serviceRoutes);
 
-// Custom error handler (optional)
+// Custom error handler
 app.use((err, req, res, next) => {
   console.error(err.stack); // Log the error
   res.status(500).json({
